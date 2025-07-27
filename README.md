@@ -18,3 +18,7 @@ YouTube video with a walkaround of the project: https://www.youtube.com/watch?v=
 - wiringpi: http://wiringpi.com/
 
 ![LED Matrix Clock](resources/screenshots/screenshot1.png)
+
+## Raspberry Pi Pico W NeoPixel Clock
+
+The `micropython/pico_w_clock.py` script provides a simple clock example for a 16x48 NeoPixel matrix driven by a Raspberry Pi Pico W. It connects to WiFi, synchronizes time using NTP and shows the current time in large digits. Update `WIFI_SSID` and `WIFI_PASSWORD` in the script with your network credentials before flashing it to the Pico W.
