@@ -19,6 +19,10 @@ YouTube video with a walkaround of the project: https://www.youtube.com/watch?v=
 
 ![LED Matrix Clock](resources/screenshots/screenshot1.png)
 
+## Animation Control API
+
+Ten real-time animation presets can temporarily replace the standard clock display via an embedded REST server. See [docs/ANIMATION_OVERVIEW.md](docs/ANIMATION_OVERVIEW.md) for the animation catalogue, architectural notes, and API usage examples.
+
 ## Raspberry Pi Pico W NeoPixel Clock
 
 The `micropython/pico_w_clock.py` script provides a simple clock example for a 16x48 NeoPixel matrix driven by a Raspberry Pi Pico W. It connects to WiFi, synchronizes time using NTP and shows the current time in large digits. Update `WIFI_SSID` and `WIFI_PASSWORD` in the script with your network credentials before flashing it to the Pico W.

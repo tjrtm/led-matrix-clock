@@ -7,6 +7,7 @@
 #include <fmt/core.h>
 #include "raylib.h"
 #include "matrix_driver.h"
+#include "animations/animation_manager.h"
 #include <nlohmann/json.hpp>
 #include <cpr/cpr.h>
 #include <boost/algorithm/string.hpp>    
@@ -81,6 +82,10 @@ int main(int argc, char** argv) {
     RenderTexture2D target = LoadRenderTexture(texWidth, texHeight);
     RenderTexture2D targetSecondHandOverlay = LoadRenderTexture(texWidth, texHeight);
     MatrixDriver matrixDriver(&argc, &argv, texWidth, texHeight);
+
+    AnimationManager animationManager(texWidth, texHeight);
+    AnimationRequestServer animationServer(animationManager, 8080);
+    animationServer.Start();
 
     if (matrixDriver.isShim()) {
         SetTargetFPS(30);
@@ -167,6 +172,9 @@ int main(int argc, char** argv) {
      */
 
     while (!WindowShouldClose()) {
+        float deltaTime = GetFrameTime();
+        animationManager.Update(deltaTime);
+
         // Query weather data if it is expired
         if (timeSinceEpochMillisec() - lastWeatherQuery > 60000) {
             std::cout << "Querying weather API..." << std::endl;
@@ -337,6 +345,9 @@ int main(int argc, char** argv) {
  
         BeginDrawing();
 
+        if (animationManager.IsActive()) {
+            animationManager.Render(target);
+        } else {
 
         BeginTextureMode(targetSecondHandOverlay);
         ClearBackground((Color){0, 0, 0, 100});
@@ -524,20 +535,24 @@ int main(int argc, char** argv) {
 
         drawOutlinedText(dateBuffer, 64 - MeasureText(dateBuffer, 5) - 2, 11, 2, (Color){0,0,0,255}, (Color){128,128,128,255});
 
-        // Reduce brightness at nighttime
+        EndTextureMode();
+        }
+
         if ((secondInDay < (7 * 60 * 60) || (secondInDay > (22 * 60 * 60)))) {
+            BeginTextureMode(target);
             BeginBlendMode(BLEND_MULTIPLIED);
             DrawRectangle(0,0,texWidth,texHeight, (Color){128,128,128,255});
             EndBlendMode();
+            EndTextureMode();
         }
 
         if (dimMode) {
+            BeginTextureMode(target);
             BeginBlendMode(BLEND_MULTIPLIED);
             DrawRectangle(0,0,texWidth,texHeight, (Color){64,64,64,255});
             EndBlendMode();
+            EndTextureMode();
         }
-
-        EndTextureMode();
 
         // Draw a debug UI on the software window
         ClearBackground((Color){0, 0, 0, 255});
@@ -558,6 +573,7 @@ int main(int argc, char** argv) {
         UnloadImage(canvasImage);
     }
 
+    animationServer.Stop();
     CloseWindow();
     return 0;
 }
