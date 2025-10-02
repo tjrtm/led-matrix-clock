@@ -112,6 +112,8 @@ endif()
 target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr)
+find_package(Threads REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 #target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
 #--------------- PLATFORM-SPECIFIC DEPENDENCIES & FLAGS --------------------
